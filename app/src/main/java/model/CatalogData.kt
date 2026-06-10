@@ -1,4 +1,4 @@
-package com.yoru.app.model
+package model
 
 data class CatalogData(
     val categories: List<Category>,

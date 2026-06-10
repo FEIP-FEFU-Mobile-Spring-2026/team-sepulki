@@ -1,4 +1,4 @@
-package com.yoru.app.model
+package model
 
 data class Product(
     val id: String,
