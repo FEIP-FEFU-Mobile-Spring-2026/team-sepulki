@@ -1,5 +1,6 @@
 package com.yoru.app
 
+import model.Product
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,6 +29,10 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             YoruTheme {
+
+                var selectedProduct by remember {
+                    mutableStateOf<Product?>(null)
+                }
 
                 var selectedScreen by remember {
                     mutableStateOf("catalog")
@@ -86,7 +91,12 @@ class MainActivity : ComponentActivity() {
                                         viewModel.getProductsForCategory(selectedCategory)
                                     ) { product ->
 
-                                        ProductCard(product)
+                                        ProductCard(
+                                            product = product,
+                                            onClick = {
+                                                selectedProduct = product
+                                            }
+                                        )
                                     }
                                 }
                             }
@@ -100,6 +110,16 @@ class MainActivity : ComponentActivity() {
                                     Text("Товары пока не добавлены")
                                 }
                             }
+                        }
+
+                        if (selectedProduct != null) {
+
+                            ProductBottomSheet(
+                                product = selectedProduct!!,
+                                onDismiss = {
+                                    selectedProduct = null
+                                }
+                            )
                         }
                     }
                 }
