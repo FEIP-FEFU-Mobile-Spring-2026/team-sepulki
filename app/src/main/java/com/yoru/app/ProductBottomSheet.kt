@@ -32,8 +32,9 @@ import androidx.compose.material.icons.filled.Info
 @Composable
 fun ProductBottomSheet(
     product: Product,
-    onDismiss: () -> Unit
-) {
+    onDismiss: () -> Unit,
+    onAddToCart: (String, String) -> Unit
+){
 
     var selectedSize by remember {
         mutableStateOf<Size?>(
@@ -127,7 +128,16 @@ fun ProductBottomSheet(
                 modifier = Modifier.padding(top = 12.dp)
             )
             Button(
-                onClick = { },
+                onClick = {
+
+                    selectedSize?.let {
+
+                        onAddToCart(
+                            product.id,
+                            it.id
+                        )
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp)

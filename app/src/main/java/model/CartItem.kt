@@ -1,0 +1,7 @@
+package model
+
+data class CartItem(
+    val productId: String,
+    val sizeId: String,
+    val quantity: Int
+)
