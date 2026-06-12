@@ -8,8 +8,9 @@ import androidx.compose.runtime.Composable
 @Composable
 fun BottomNavigationBar(
     selectedScreen: String,
+    cartCount: Int,
     onScreenSelected: (String) -> Unit
-) {
+){
 
     NavigationBar {
 
@@ -29,9 +30,21 @@ fun BottomNavigationBar(
             onClick = {
                 onScreenSelected("cart")
             },
+
             label = {
-                Text("Корзина")
+
+                if (cartCount > 0) {
+
+                    Text(
+                        "Корзина ($cartCount)"
+                    )
+
+                } else {
+
+                    Text("Корзина")
+                }
             },
+
             icon = {}
         )
     }

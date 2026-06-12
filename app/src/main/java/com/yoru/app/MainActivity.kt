@@ -25,6 +25,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: CatalogViewModel by viewModels()
     private val cartViewModel: CartViewModel by viewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         cartViewModel.loadCart(this)
@@ -89,6 +90,12 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         BottomNavigationBar(
                             selectedScreen = selectedScreen,
+
+                            cartCount =
+                                cartViewModel.cartItems.sumOf {
+                                    it.quantity
+                                },
+
                             onScreenSelected = {
                                 selectedScreen = it
                             }
