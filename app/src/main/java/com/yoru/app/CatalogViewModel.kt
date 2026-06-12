@@ -1,17 +1,54 @@
 package com.yoru.app
 
-import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import model.CatalogData
 import model.Category
 import model.Product
 
 class CatalogViewModel : ViewModel() {
 
-    private var catalogData: CatalogData? = null
+    private val repository = CatalogRepository()
 
-    fun loadData(context: Context) {
-        catalogData = JsonLoader.loadCatalog(context)
+    private var catalogData by mutableStateOf<CatalogData?>(null)
+
+    var isLoading by mutableStateOf(false)
+        private set
+
+    var errorMessage by mutableStateOf<String?>(null)
+        private set
+
+    fun loadData() {
+
+        viewModelScope.launch {
+
+            isLoading = true
+            errorMessage = null
+
+            try {
+
+                val response = repository.loadCatalog()
+
+                if (response.isSuccessful) {
+
+                    catalogData = response.body()
+
+                } else {
+
+                    errorMessage = "Ошибка сервера"
+                }
+
+            } catch (e: Exception) {
+
+                errorMessage = "Ошибка сети"
+            }
+
+            isLoading = false
+        }
     }
 
     fun getCategories(): List<Category> {
@@ -19,20 +56,24 @@ class CatalogViewModel : ViewModel() {
     }
 
     fun getNewProducts(): List<Product> {
+
         return catalogData?.items?.filter {
             "New" in it.tags
         } ?: emptyList()
     }
 
-    fun getProductsForCategory(categoryName: String): List<Product> {
+    fun getProductsForCategory(
+        categoryName: String
+    ): List<Product> {
 
         if (categoryName == "Новинки") {
             return getNewProducts()
         }
 
-        val category = catalogData?.categories?.find {
-            it.name == categoryName
-        }
+        val category =
+            catalogData?.categories?.find {
+                it.name == categoryName
+            }
 
         return catalogData?.items?.filter {
             it.categoryId == category?.id
@@ -40,23 +81,20 @@ class CatalogViewModel : ViewModel() {
     }
 
     fun getCategoriesWithNew(): List<String> {
-        val categories = mutableListOf("Новинки")
+
+        val categories =
+            mutableListOf("Новинки")
 
         categories.addAll(
-            catalogData?.categories?.map { it.name }
-                ?: emptyList()
+            catalogData?.categories?.map {
+                it.name
+            } ?: emptyList()
         )
 
         return categories
     }
 
-    fun getProducts(): List<Product> {
-        return catalogData?.items ?: emptyList()
-    }
-
-    fun getProductsByCategory(categoryId: String): List<Product> {
-        return catalogData?.items?.filter {
-            it.categoryId == categoryId
-        } ?: emptyList()
+    fun retryLoading() {
+        loadData()
     }
 }
