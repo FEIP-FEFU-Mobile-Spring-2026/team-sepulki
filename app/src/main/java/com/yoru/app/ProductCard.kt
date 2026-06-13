@@ -1,6 +1,9 @@
 package com.yoru.app
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import model.Product
 
@@ -26,30 +30,53 @@ fun ProductCard(
 ) {
 
     Card(
+
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .padding(
+                horizontal = 20.dp,
+                vertical = 12.dp
+            )
             .clickable {
                 onClick()
             },
 
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(8.dp),
 
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
+        border = BorderStroke(
+            1.dp,
+            Color(0x33FFFFFF)
+        ),
+
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0x22181312)
         )
     ) {
 
         Column {
 
-            AsyncImage(
-                model = product.imageUrl,
-                contentDescription = product.name,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(220.dp),
-                contentScale = ContentScale.Crop
-            )
+            Box {
+
+                AsyncImage(
+                    model = product.imageUrl,
+                    contentDescription = product.name,
+
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp),
+
+                    contentScale = ContentScale.Crop
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .background(
+                            Color.Black.copy(alpha = 0.15f)
+                        )
+                )
+            }
 
             Column(
                 modifier = Modifier.padding(16.dp)
@@ -57,16 +84,24 @@ fun ProductCard(
 
                 Text(
                     text = product.name,
+
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
+
+                    fontWeight = FontWeight.Medium,
+
+                    color = Color.White
                 )
 
                 Text(
                     text = "${product.priceInKopecks / 100} ₽",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = Color(0xFF1B5E20),
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(top = 6.dp)
+
+                    fontSize = 16.sp,
+
+                    color = Color.LightGray,
+
+                    modifier = Modifier.padding(
+                        top = 4.dp
+                    )
                 )
             }
         }

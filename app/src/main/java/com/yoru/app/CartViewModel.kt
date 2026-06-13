@@ -31,10 +31,12 @@ class CartViewModel : ViewModel() {
     var cartItems by mutableStateOf<List<CartItem>>(emptyList())
         private set
 
+
     fun addToCart(
+        context: Context,
         productId: String,
         sizeId: String
-    ) {
+    ){
 
         val existingItem = cartItems.find {
 
@@ -69,9 +71,11 @@ class CartViewModel : ViewModel() {
                 quantity = 1
             )
         }
+        saveCart(context)
     }
 
     fun increaseQuantity(
+        context: Context,
         productId: String,
         sizeId: String
     ) {
@@ -92,9 +96,12 @@ class CartViewModel : ViewModel() {
                 it
             }
         }
+
+        saveCart(context)
     }
 
     fun decreaseQuantity(
+        context: Context,
         productId: String,
         sizeId: String
     ) {
@@ -122,8 +129,11 @@ class CartViewModel : ViewModel() {
                 it
             }
         }
+
+        saveCart(context)
     }
     fun removeItem(
+        context: Context,
         productId: String,
         sizeId: String
     ) {
@@ -133,6 +143,8 @@ class CartViewModel : ViewModel() {
             it.productId == productId &&
                     it.sizeId == sizeId
         }
+
+        saveCart(context)
     }
 
     fun getTotalPrice(
@@ -152,11 +164,14 @@ class CartViewModel : ViewModel() {
 
     }
 
-    fun clearCart() {
+    fun clearCart(
+        context: Context
+    ) {
 
         cartItems = emptyList()
-    }
 
+        saveCart(context)
+    }
 }
 
 
