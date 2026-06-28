@@ -97,4 +97,12 @@ class CatalogViewModel : ViewModel() {
     fun retryLoading() {
         loadData()
     }
+    fun getProductById(
+        productId: String
+    ): Product? {
+
+        return catalogData?.items?.find {
+            it.id == productId
+        }
+    }
 }

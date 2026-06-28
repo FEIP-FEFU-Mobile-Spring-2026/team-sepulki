@@ -1,5 +1,6 @@
 package com.yoru.app
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,8 +33,9 @@ import androidx.compose.material.icons.filled.Info
 @Composable
 fun ProductBottomSheet(
     product: Product,
-    onDismiss: () -> Unit
-) {
+    onDismiss: () -> Unit,
+    onAddToCart: (String, String) -> Unit
+){
 
     var selectedSize by remember {
         mutableStateOf<Size?>(
@@ -41,6 +43,9 @@ fun ProductBottomSheet(
         )
     }
     var showInfoDialog by remember {
+        mutableStateOf(false)
+    }
+    var addedToCart by remember {
         mutableStateOf(false)
     }
 
@@ -86,8 +91,12 @@ fun ProductBottomSheet(
             )
 
             Text(
+
                 text = "${product.priceInKopecks / 100} ₽",
-                modifier = Modifier.padding(top = 8.dp)
+
+                modifier = Modifier.padding(top = 8.dp),
+
+                color = androidx.compose.ui.graphics.Color.LightGray
             )
             IconButton(
                 onClick = {
@@ -126,13 +135,43 @@ fun ProductBottomSheet(
                 text = product.longDescription,
                 modifier = Modifier.padding(top = 12.dp)
             )
-            Button(
-                onClick = { },
+            TextButton(
+
+                onClick = {
+
+                    selectedSize?.let {
+
+                        onAddToCart(
+                            product.id,
+                            it.id
+                        )
+                        addedToCart = true
+                    }
+                },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp)
+
             ) {
-                Text("В корзину")
+
+                Text(
+                    text = "В КОРЗИНУ",
+                            color = Color(0xFFE8C46A)
+                )
+            }
+            if (addedToCart) {
+
+                Text(
+
+                    text = "✓ Добавлено в корзину",
+
+                    color = Color(0xFFD8A23A),
+
+                    modifier = Modifier.padding(
+                        top = 8.dp
+                    )
+                )
             }
         }
     }
