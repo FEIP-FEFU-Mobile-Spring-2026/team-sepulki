@@ -3,63 +3,107 @@ package com.yoru.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.yoru.app.ui.theme.YoruTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: CatalogViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        viewModel.loadData(this)
+
         setContent {
+
             YoruTheme {
-                YoruStartScreen()
+
+                var selectedScreen by remember {
+                    mutableStateOf("catalog")
+                }
+
+                var selectedCategory by remember {
+                    mutableStateOf("Новинки")
+                }
+
+                val categories = viewModel.getCategoriesWithNew()
+
+                androidx.compose.material3.Scaffold(
+
+                    bottomBar = {
+                        BottomNavigationBar(
+                            selectedScreen = selectedScreen,
+                            onScreenSelected = {
+                                selectedScreen = it
+                            }
+                        )
+                    }
+
+                ) { paddingValues ->
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    ) {
+
+                        when (selectedScreen) {
+
+                            "catalog" -> {
+
+                                TabRow(
+                                    selectedTabIndex = categories.indexOf(selectedCategory)
+                                ) {
+
+                                    categories.forEach { category ->
+
+                                        Tab(
+                                            selected = selectedCategory == category,
+                                            onClick = {
+                                                selectedCategory = category
+                                            },
+                                            text = {
+                                                Text(category)
+                                            }
+                                        )
+                                    }
+                                }
+
+                                LazyColumn {
+
+                                    items(
+                                        viewModel.getProductsForCategory(selectedCategory)
+                                    ) { product ->
+
+                                        ProductCard(product)
+                                    }
+                                }
+                            }
+
+                            "cart" -> {
+
+                                Column {
+
+                                    Text("Корзина")
+
+                                    Text("Товары пока не добавлены")
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-    }
-}
-
-@Composable
-fun YoruStartScreen(modifier: Modifier = Modifier) {
-    Surface(modifier = modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier.padding(24.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Yoru",
-                style = MaterialTheme.typography.headlineLarge
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = "Каталог одежды для быстрого выбора образа",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Команда team-sepulki",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun YoruStartScreenPreview() {
-    YoruTheme {
-        YoruStartScreen()
     }
 }
