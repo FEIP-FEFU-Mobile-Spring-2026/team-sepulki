@@ -19,9 +19,14 @@ import coil.compose.AsyncImage
 import model.Product
 
 @Composable
-fun ProductCard(product: Product) {
+fun ProductCard(
+    product: Product,
+    onClick: () -> Unit
+) {
 
     Card(
+        onClick = onClick,
+
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 6.dp),
