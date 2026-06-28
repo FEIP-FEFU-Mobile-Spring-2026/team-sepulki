@@ -1,5 +1,6 @@
 package com.yoru.app
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,11 +26,12 @@ fun ProductCard(
 ) {
 
     Card(
-        onClick = onClick,
-
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .clickable {
+                onClick()
+            },
 
         shape = RoundedCornerShape(16.dp),
 
