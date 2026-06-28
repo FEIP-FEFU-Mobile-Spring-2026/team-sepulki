@@ -300,6 +300,11 @@ class MainActivity : ComponentActivity() {
 
                                             if (product != null) {
 
+                                                val sizeName =
+                                                    product.sizes.find {
+                                                        it.id == item.sizeId
+                                                    }?.name ?: item.sizeId
+
                                                 Card(
 
                                                     modifier = Modifier
@@ -347,6 +352,18 @@ class MainActivity : ComponentActivity() {
                                                                 color = Color.White,
 
                                                                 fontSize = 18.sp
+                                                            )
+
+                                                            Text(
+                                                                text = "Размер: $sizeName",
+
+                                                                color = Color.LightGray,
+
+                                                                fontSize = 14.sp,
+
+                                                                modifier = Modifier.padding(
+                                                                    top = 4.dp
+                                                                )
                                                             )
 
                                                             Text(
